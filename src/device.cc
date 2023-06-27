@@ -41,7 +41,7 @@ template<typename U, typename T, typename F, class = typename ::std::enable_if_t
     if (contains(v, ref_values, func)) {
       old.push_back(v);
     } else {
-      ERROR("value %s is missing", v);
+      WARN("value %s is missing", v);
     }
   }
   return old;
