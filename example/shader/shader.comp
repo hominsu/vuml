@@ -1,0 +1,25 @@
+#version 450 core
+
+// workgroup size (set with .spec(64) on C++ side)
+layout (local_size_x_id = 0) in;
+
+// push constants (set with {128, 0.1} on C++ side)
+layout (push_constant) uniform Parameters {
+    uint size;  // array size
+    float a;    // scaling parameter
+} params;
+
+// array parameters
+layout (std430, binding = 0) buffer lay0 { float arr_y[]; };
+layout (std430, binding = 1) buffer lay1 { float arr_x[]; };
+
+void main() {
+    // current offset
+    const uint id = gl_GlobalInvocationID.x;
+    // drop threads outside the buffer
+    if (params.size <= id) {
+        return;
+    }
+    // saxpy
+    arr_y[id] += params.a * arr_x[id];
+}
