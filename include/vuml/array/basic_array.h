@@ -86,7 +86,7 @@ class BasicArray : public vk::Buffer, private NonCopyable {
     ::std::swap(static_cast<vk::Buffer &>(*this), static_cast<vk::Buffer &>(other));
     ::std::swap(mem_, other.mem_);
     ::std::swap(flags_, other.flags_);
-    ::std::swap(device_, other.device_);
+    swap(device_, other.device_);
   }
 
  private:

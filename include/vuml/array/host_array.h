@@ -64,7 +64,7 @@ class HostArray : public BasicArray<Alloc> {
   }
 
   HostArray(HostArray &&other)
-      : Base(::std::move(other), data_(other.data_), size_(other.size_)) {
+      : Base(::std::move(other)), data_(other.data_), size_(other.size_) {
     other.data_ = nullptr;
   }
 
