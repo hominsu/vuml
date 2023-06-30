@@ -1,8 +1,5 @@
-#include <cinttypes>
-
+#include <algorithm>
 #include <vector>
-
-#include "unistd.h"
 
 #include "vuml/array.h"
 #include "vuml/device.h"
@@ -15,25 +12,45 @@ int main() {
 #else
   vuml::logger::set_log_level(vuml::logger::Level::INFO);
 #endif
-  vuml::logger::set_log_fd(STDOUT_FILENO);
+  vuml::logger::set_log_file(stdout);
 
   auto instance = vuml::Instance();
   auto devices = instance.devices();
+  auto discrete_iter = ::std::find_if(
+      devices.begin(),
+      devices.end(),
+      [&](const auto &dev) {
+        return dev.properties().deviceType == vk::PhysicalDeviceType::eIntegratedGpu;
+      }
+  );
+  auto device = discrete_iter != devices.end() ? *discrete_iter : devices.at(0);
 
-  INFO("devices num: %zu", devices.size());
-  for (::std::size_t i = 0; i < devices.size(); ++i) {
-    INFO("device_%zu name: %s", i, devices[i].properties().deviceName.data());
-    INFO("device_%zu shared memory size: %uB", i, devices[i].properties().limits.maxComputeSharedMemorySize);
-    INFO("device_%zu work group invocations: %u", i, devices[i].properties().limits.maxComputeWorkGroupInvocations);
+  INFO("devices num: %zu, choose: [%s]", devices.size(), device.properties().deviceName.data());
+  for (const auto &dev : devices) {
+    INFO("[%s] type: %s",
+         dev.properties().deviceName.data(),
+         vk::to_string(dev.properties().deviceType).c_str());
+    INFO("[%s] shared memory size: %uMB",
+         dev.properties().deviceName.data(),
+         dev.properties().limits.maxComputeSharedMemorySize / 1024);
+    INFO("[%s] work group invocations: %u",
+         dev.properties().deviceName.data(),
+         dev.properties().limits.maxComputeWorkGroupInvocations);
 
-    auto wg_count = devices[i].properties().limits.maxComputeWorkGroupCount;
-    INFO("device_%zu work group count: [%u,%u,%u]", i, wg_count[0], wg_count[1], wg_count[2]);
+    auto wg_count = dev.properties().limits.maxComputeWorkGroupCount;
+    INFO("[%s] work group count: [%u,%u,%u]",
+         dev.properties().deviceName.data(),
+         wg_count[0],
+         wg_count[1],
+         wg_count[2]);
 
-    auto wg_size = devices[i].properties().limits.maxComputeWorkGroupSize;
-    INFO("device_%zu work group size: [%u,%u,%u]", i, wg_size[0], wg_size[1], wg_size[2]);
+    auto wg_size = dev.properties().limits.maxComputeWorkGroupSize;
+    INFO("[%s] work group size: [%u,%u,%u]",
+         dev.properties().deviceName.data(),
+         wg_size[0],
+         wg_size[1],
+         wg_size[2]);
   }
-
-  auto &device = devices[0];
 
   auto x = ::std::vector<float>(64, 1.0f);
   auto d_x = vuml::Array<float, vuml::memory::Host>(device, x.begin(), x.end());

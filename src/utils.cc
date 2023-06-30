@@ -21,8 +21,9 @@ namespace vuml {
     throw ::std::runtime_error(::std::string("open ") + filename + "failed");
   }
   const auto size = static_cast<uint32_t>(f.tellg());
+  f.seekg(0);
 
-  auto ret = ::std::vector<uint32_t>((size + 3) / 4);  // align to 4 bytes
+  auto ret = ::std::vector<uint32_t>((size + 3) / 4, 0);  // align to 4 bytes
   ::std::copy(::std::istreambuf_iterator<char>(f),
               ::std::istreambuf_iterator<char>(),
               reinterpret_cast<char *>(ret.data()));

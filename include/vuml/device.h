@@ -50,14 +50,14 @@ class Device : public vk::Device {
   vk::Queue computeQueue(uint32_t i = 0);
   vk::Queue transferQueue(uint32_t i = 0);
   vk::DeviceMemory alloc(vk::Buffer buffer, uint32_t memory_id);
-  vk::CommandPool computeCmdPool() {return compute_cmd_pool_;}
-  vk::CommandBuffer& computeCmdBuffer() {return compute_cmd_buffer_;}
+  vk::CommandPool computeCmdPool() { return compute_cmd_pool_; }
+  vk::CommandBuffer &computeCmdBuffer() { return compute_cmd_buffer_; }
   vk::CommandPool transferCmdPool() { return transfer_cmd_pool_; }
-  vk::CommandBuffer& transferCmdBuffer() { return transfer_cmd_buffer_; }
+  vk::CommandBuffer &transferCmdBuffer() { return transfer_cmd_buffer_; }
   vk::Pipeline createPipeline(vk::PipelineLayout pipeline_layout,
                               vk::PipelineCache pipeline_cache,
                               const vk::PipelineShaderStageCreateInfo &shader_stage_info,
-                              vk::PipelineCreateFlags flags);
+                              vk::PipelineCreateFlags flags = {});
   vk::CommandBuffer releaseComputeCmdBuffer();
 
  private:

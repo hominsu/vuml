@@ -39,6 +39,17 @@ struct is_iterator<T, ::std::void_t<
 template<typename T>
 constexpr bool is_iterator_v = is_iterator<T>::value;
 
+template<typename Tuple>
+struct tuple_args_len {};
+
+template<typename ...Ts>
+struct tuple_args_len<::std::tuple<Ts...>> {
+  static constexpr ::std::size_t value = sizeof...(Ts);
+};
+
+template<typename Tuple>
+constexpr auto tuple_args_len_v = tuple_args_len<Tuple>::value;
+
 } // namespace vuml
 
 #endif //VUML_INCLUDE_VUML_TRAITS_H_

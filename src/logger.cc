@@ -4,8 +4,6 @@
 
 #include "vuml/logger.h"
 
-#include <unistd.h>
-
 #include "vuml/timestamp.h"
 
 namespace vuml::logger {
@@ -16,16 +14,16 @@ Level log_level = DEBUG;
 Level log_level = INFO;
 #endif
 
-int log_fd = STDOUT_FILENO;
+FILE* log_file = stdout;
 
 void set_log_level(Level _level) {
   VUML_ASSERT((_level >= TRACE && _level <= FATAL) && "log level out of range");
   log_level = _level;
 }
 
-void set_log_fd(int _fd) {
-  VUML_ASSERT(_fd > 0 && "file descriptor should greater than 0");
-  log_fd = _fd;
+void set_log_file(FILE *_file) {
+  VUML_ASSERT(_file != nullptr && "file pointer should not be nullptr");
+  log_file = _file;
 }
 
 void timestamp(char *_buf, std::size_t _size) {

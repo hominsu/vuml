@@ -5,6 +5,7 @@ if (POLICY CMP0054)
 endif ()
 
 set(EXAMPLES
+        mandelbrot
         test
         )
 

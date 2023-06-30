@@ -17,7 +17,6 @@
 #include "vuml/vuml.h"
 
 #include <vulkan/vulkan.hpp>
-#include <vulkan/vulkan_handles.hpp>
 
 namespace vuml::array {
 
